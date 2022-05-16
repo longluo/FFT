@@ -64,13 +64,13 @@ vector<complex<double>> FFT(vector<complex<double>> &a, bool invert) {
 
     // Root of Units
     double ang = 2 * PI / n * (invert ? -1 : 1);
-    complex<double> omega(cos(ang), sin(ang)); // omega为第一个n次复根,
-    complex<double> curRoot(1, 0);   // curr为第零0个n次复根, 即为 1
+    complex<double> wn(cos(ang), sin(ang)); // wn为第1个n次复根,
+    complex<double> w(1, 0);   // w为第零0个n次复根, 即为 1
 
     for (int i = 0; i < n / 2; i++) {
-        y[i] = ye[i] + curRoot * yo[i];  // 求出P(xi)
-        y[i + n / 2] = ye[i] - curRoot * yo[i]; // 由单位复根的性质可知第k个根与第k + n/2个根互为相反数
-        curRoot *= omega;   // cur * omega得到下一个复根
+        y[i] = ye[i] + w * yo[i];  // 求出P(xi)
+        y[i + n / 2] = ye[i] - w * yo[i]; // 由单位复根的性质可知第k个根与第k + n/2个根互为相反数
+        w *= wn;  // w * wn 得到下一个复根
     }
 
     // IFFT最终结果需要除以 n ，其中 n 为不小于原多项式阶+1的最小2的整数次幂
