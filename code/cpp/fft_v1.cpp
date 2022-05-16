@@ -4,11 +4,32 @@
 
 #include <bits/stdc++.h>
 
-#define sync ios::sync_with_stdio(false)
-
 using namespace std;
 
 const double PI = acos(-1.0);    // PI = arccos(-1)
+
+// Complex Number
+struct Complex {
+    double x, y;
+
+    Complex(double _x = 0.0, double _y = 0.0) {
+        x = _x;
+        y = _y;
+    }
+
+    Complex operator-(const Complex &b) const {
+        return Complex(x - b.x, y - b.y);
+    }
+
+    Complex operator+(const Complex &b) const {
+        return Complex(x + b.x, y + b.y);
+    }
+
+    Complex operator*(const Complex &b) const {
+        return Complex(x * b.x - y * b.y, x * b.y + y * b.x);
+    }
+};
+
 
 /**
  * FFT 实现
@@ -52,13 +73,21 @@ vector<complex<double>> FFT(vector<complex<double>> &a, bool invert) {
         curRoot *= omega;   // cur * omega得到下一个复根
     }
 
+    // IFFT最终结果需要除以 n ，其中 n 为不小于原多项式阶+1的最小2的整数次幂
+//    if (invert) {
+//        for (auto &cd : y) {
+//            cd /= n;
+//        }
+//    }
+
     return y;  // 返回最终的系数
 }
 
-vector<complex<double>> read() {    //获取系数, 注意需要从右向左获取(从0次幂的系数开始)
+//获取系数, 注意需要从右向左获取(从0次幂的系数开始)
+vector<complex<double>> read() {
     string num;
     cin >> num;
-    vector<complex<double> > result;
+    vector<complex<double>> result;
     for (int i = num.size() - 1; i >= 0; i--) {
         complex<double> tmp(num[i] - '0', 0);
         result.push_back(tmp);
@@ -71,6 +100,7 @@ vector<complex<double>> read() {    //获取系数, 注意需要从右向左获�
 void solve(vector<complex<double>> &a, vector<complex<double>> &b) {
     complex<double> tmp(0, 0);
     int sum = a.size() + b.size();
+
     while (a.size() < sum) {
         a.push_back(tmp);
     }
@@ -94,13 +124,39 @@ void solve(vector<complex<double>> &a, vector<complex<double>> &b) {
     //补齐
 }
 
+string multiply(string num1, string num2) {
+
+    return "";
+}
+
+void display(vector<complex<double>> num) {
+    for (auto& cd : num) {
+        cout << cd;
+    }
+
+    cout << endl;
+}
+
 int main() {
-    sync;
-    vector<complex<double>> num1 = read(), num2 = read(), tmp1, tmp2, mid, ans;
+    vector<complex<double>> num1, num2;
+
+    num1 = read();
+    num2 = read();
+
+    cout << "num1 = ";
+    display(num1);
+    cout << "num2 = ";
+    display(num2);
+
+    vector<complex<double>> tmp1, tmp2, mid, ans;
     solve(num1, num2);
-    tmp1 = FFT(num1, false), tmp2 = FFT(num2, false);
+
+    tmp1 = FFT(num1, false);
+    tmp2 = FFT(num2, false);
+
     num1.clear();
     num2.clear();
+
     for (int i = 0; i < tmp1.size(); i++) {
         mid.push_back(tmp1[i] * tmp2[i]);
     }
@@ -117,8 +173,10 @@ int main() {
     for (int i = 0; i < ans.size(); i++) {
         int op = round(round(ans[i].real()) / ans.size()) + add;
         add = 0;
-        if (op >= 10)
+        if (op >= 10) {
             add = op / 10;
+        }
+
         final += op % 10 + '0';
     }
 
@@ -126,11 +184,14 @@ int main() {
         final += add % 10 + '0';
     }
 
+    cout << "Result is: " << endl;
+
     for (int i = final.size() - 1; i >= 0; i--) {
         if (final[i] != '0') {
             Ans = true;
-        } else if (!Ans)
+        } else if (!Ans) {
             continue;
+        }
 
         cout << final[i];
     }
