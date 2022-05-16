@@ -32,7 +32,7 @@ struct Complex {
 
 
 /**
- * FFT 实现
+ * FFT Recursion 实现
  *
  * @param a
  * @param invert true means IFFT, else FFT
@@ -124,13 +124,8 @@ void solve(vector<complex<double>> &a, vector<complex<double>> &b) {
     //补齐
 }
 
-string multiply(string num1, string num2) {
-
-    return "";
-}
-
 void display(vector<complex<double>> num) {
-    for (auto& cd : num) {
+    for (auto &cd : num) {
         cout << cd;
     }
 
@@ -168,6 +163,15 @@ int main() {
     bool Ans = false;
     int add = 0;
     string final;
+
+    cout << "Output: ";
+    display(ans);
+
+    for (int i = 0; i < ans.size(); i++) {
+        cout << "   Before: " << round(ans[i].real()) << " After: " << round(round(ans[i].real()) / ans.size());
+    }
+
+    cout << endl;
 
     //进位处理
     for (int i = 0; i < ans.size(); i++) {
