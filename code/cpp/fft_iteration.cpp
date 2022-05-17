@@ -108,6 +108,12 @@ void FFT(vector<complex<double>> &a, bool invert) {
             }
         }
     }
+
+    if (invert) {
+        for (auto &x : a) {
+            x /= n;
+        }
+    }
 }
 
 //获取系数, 注意需要从右向左获取(从0次幂的系数开始)
@@ -177,7 +183,7 @@ int main() {
     FFT(num2, false);
 
     for (int i = 0; i < num1.size(); i++) {
-       num1[i] *= num2[i];
+        num1[i] *= num2[i];
     }
 
     cout << "Muplty num1 = ";
@@ -185,45 +191,27 @@ int main() {
 
     FFT(num1, true);
 
-    bool Ans = false;
-    int add = 0;
-    string final;
-
     cout << "Output: ";
     display(num1);
-
-    for (int i = 0; i < num1.size(); i++) {
-        cout << "   Before: " << round(num1[i].real()) << " After: " << round(round(num1[i].real()) / num1.size());
-    }
-
     cout << endl;
 
-    //进位处理
+    string res;
+    int carry = 0;
+
     for (int i = 0; i < num1.size(); i++) {
-        int op = round(round(num1[i].real()) / num1.size()) + add;
-        add = 0;
-        if (op >= 10) {
-            add = op / 10;
-        }
-
-        final += op % 10 + '0';
-    }
-
-    if (add > 0) {
-        final += add % 10 + '0';
+        int sum = floor(num1[i].real() + 0.5) + carry;
+        carry = sum / 10;
+        res += sum % 10 + '0';
     }
 
     cout << "Result is: " << endl;
 
-    for (int i = final.size() - 1; i >= 0; i--) {
-        if (final[i] != '0') {
-            Ans = true;
-        } else if (!Ans) {
-            continue;
-        }
-
-        cout << final[i];
+    int idx = num1.size() - 1;
+    while (res[idx] == '0' && idx > 0) {
+        idx--;
     }
 
-    cout << '\n';
+    res = res.substr(0, idx + 1);
+    reverse(res.begin(), res.end());
+    cout << res << endl;
 }
