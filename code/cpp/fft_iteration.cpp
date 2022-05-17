@@ -52,28 +52,27 @@ void change(vector<complex<double>> &y, int len) {
     }
 }
 
-
 // 同样需要保证 len 是 2 的幂
 // 记 rev[i] 为 i 翻转后的值
-void bitReverse(vector<complex<double>> &y, int len) {
-    vector<int> rev(len);
+// time: O(n)
+void bitReverse(vector<complex<double>> &arr) {
+    int len = arr.size();
 
+    vector<int> rev(len);
     rev[0] = 0;
+
     for (int i = 1; i < len; i++) {
-        // 最后一位之前的部分
         rev[i] = rev[i >> 1] >> 1;
-        if (i & 1) {  // 如果最后一位是 1，需要再加上 len/2
+        if (i & 1) {
             rev[i] |= len >> 1;
         }
     }
 
     for (int i = 0; i < len; ++i) {
-        if (i < rev[i]) {  // 保证每对数只翻转一次
-            swap(y[i], y[rev[i]]);
+        if (i < rev[i]) {
+            swap(arr[i], arr[rev[i]]);
         }
     }
-
-    return;
 }
 
 /**
@@ -83,42 +82,32 @@ void bitReverse(vector<complex<double>> &y, int len) {
  * @param invert true means IFFT, else FFT
  * @return y
  */
-vector<complex<double>> FFT(vector<complex<double>> &a, bool invert) {
+void FFT(vector<complex<double>> &a, bool invert) {
     //第一个参数为一个多项式的系数, 以次数从小到大的顺序, 向量中每一项的实部为该项系数
     int n = a.size();
 
     // 如果当前多项式仅有常数项时直接返回多项式的值
     if (n == 1) {
-        return a;
+        return;
     }
 
-    vector<complex<double>> Pe(n / 2), Po(n / 2); // 文中的Pe与Po的系数表示法
+    bitReverse(a);
 
-    for (int i = 0; 2 * i < n; i++) {
-        Pe[i] = a[2 * i];
-        Po[i] = a[2 * i + 1];
+    for (int len = 2; len <= n; len <<= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        complex<double> wlen(cos(ang), sin(ang));
+
+        for (int i = 0; i < n; i += len) {
+            complex<double> w(1, 0);
+            for (int j = 0; j < len / 2; j++) {
+                complex<double> u = a[i + j];
+                complex<double> v = w * a[i + j + len / 2];
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
+            }
+        }
     }
-
-    // Divide 分治
-    // 递归求 ye = Pe(xi), yo = Po(xi)
-    vector<complex<double>> ye = FFT(Pe, invert);
-    vector<complex<double>> yo = FFT(Po, invert);
-
-    // Combine
-    vector<complex<double>> y(n);
-
-    // Root of Units
-    double ang = 2 * PI / n * (invert ? -1 : 1);
-    complex<double> omega(cos(ang), sin(ang)); // omega为第一个n次复根,
-    complex<double> curRoot(1, 0);   // curr为第零0个n次复根, 即为 1
-
-    for (int i = 0; i < n / 2; i++) {
-        y[i] = ye[i] + curRoot * yo[i];  // 求出P(xi)
-        y[i + n / 2] = ye[i] - curRoot * yo[i]; // 由单位复根的性质可知第k个根与第k + n/2个根互为相反数
-        curRoot *= omega;   // cur * omega得到下一个复根
-    }
-
-    return y;  // 返回最终的系数
 }
 
 //获取系数, 注意需要从右向左获取(从0次幂的系数开始)
@@ -171,58 +160,47 @@ void display(vector<complex<double>> num) {
 }
 
 int main() {
-
-    vector<complex<double>> bits(8);
-    for (int i = 0; i < 8; i++) {
-        bits[i] = i;
-    }
-    display(bits);
-    change(bits, 8);
-    display(bits);
-
     vector<complex<double>> num1, num2;
 
     num1 = read();
     num2 = read();
 
+    solve(num1, num2);
+
+    cout << "Input:" << endl;
     cout << "num1 = ";
     display(num1);
     cout << "num2 = ";
     display(num2);
 
-    vector<complex<double>> tmp1, tmp2, mid, ans;
-    solve(num1, num2);
+    FFT(num1, false);
+    FFT(num2, false);
 
-    tmp1 = FFT(num1, false);
-    tmp2 = FFT(num2, false);
-
-    num1.clear();
-    num2.clear();
-
-    for (int i = 0; i < tmp1.size(); i++) {
-        mid.push_back(tmp1[i] * tmp2[i]);
+    for (int i = 0; i < num1.size(); i++) {
+       num1[i] *= num2[i];
     }
 
-    tmp1.clear();
-    tmp2.clear();
+    cout << "Muplty num1 = ";
+    display(num1);
 
-    ans = FFT(mid, true);
+    FFT(num1, true);
+
     bool Ans = false;
     int add = 0;
     string final;
 
     cout << "Output: ";
-    display(ans);
+    display(num1);
 
-    for (int i = 0; i < ans.size(); i++) {
-        cout << "   Before: " << round(ans[i].real()) << " After: " << round(round(ans[i].real()) / ans.size());
+    for (int i = 0; i < num1.size(); i++) {
+        cout << "   Before: " << round(num1[i].real()) << " After: " << round(round(num1[i].real()) / num1.size());
     }
 
     cout << endl;
 
     //进位处理
-    for (int i = 0; i < ans.size(); i++) {
-        int op = round(round(ans[i].real()) / ans.size()) + add;
+    for (int i = 0; i < num1.size(); i++) {
+        int op = round(round(num1[i].real()) / num1.size()) + add;
         add = 0;
         if (op >= 10) {
             add = op / 10;
