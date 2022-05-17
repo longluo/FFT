@@ -30,7 +30,6 @@ struct Complex {
     }
 };
 
-
 /**
  * FFT Recursion 实现
  *
@@ -126,7 +125,11 @@ void solve(vector<complex<double>> &a, vector<complex<double>> &b) {
 
 void display(vector<complex<double>> num) {
     for (auto &cd : num) {
-        cout << cd;
+        cout << " ";
+        cout << cd.real();
+        if (cd.imag() != 0) {
+            cout << "+" << cd.imag() << "i";
+        }
     }
 
     cout << endl;
@@ -149,12 +152,19 @@ int main() {
     tmp1 = FFT(num1, false);
     tmp2 = FFT(num2, false);
 
+    cout << "After FFT: " << endl;
+    display(tmp1);
+    display(tmp2);
+
     num1.clear();
     num2.clear();
 
     for (int i = 0; i < tmp1.size(); i++) {
         mid.push_back(tmp1[i] * tmp2[i]);
     }
+
+    cout << "After times:";
+    display(mid);
 
     tmp1.clear();
     tmp2.clear();
@@ -166,11 +176,6 @@ int main() {
 
     cout << "Output: ";
     display(ans);
-
-    for (int i = 0; i < ans.size(); i++) {
-        cout << "   Before: " << round(ans[i].real()) << " After: " << round(round(ans[i].real()) / ans.size());
-    }
-
     cout << endl;
 
     //进位处理
@@ -188,7 +193,7 @@ int main() {
         final += add % 10 + '0';
     }
 
-    cout << "Result is: " << endl;
+    cout << "Result: ";
 
     for (int i = final.size() - 1; i >= 0; i--) {
         if (final[i] != '0') {
