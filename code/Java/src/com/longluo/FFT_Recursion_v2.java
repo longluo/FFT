@@ -84,7 +84,6 @@ public class FFT_Recursion_v2 {
             return y;
         }
 
-
         public static Complex[] IFFT(Complex[] x) {
             int n = x.length;
             Complex[] y = new Complex[n];
