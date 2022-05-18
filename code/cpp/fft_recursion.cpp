@@ -6,29 +6,7 @@
 
 using namespace std;
 
-const double PI = acos(-1.0);    // PI = arccos(-1)
-
-// Complex Number
-struct Complex {
-    double x, y;
-
-    Complex(double _x = 0.0, double _y = 0.0) {
-        x = _x;
-        y = _y;
-    }
-
-    Complex operator-(const Complex &b) const {
-        return Complex(x - b.x, y - b.y);
-    }
-
-    Complex operator+(const Complex &b) const {
-        return Complex(x + b.x, y + b.y);
-    }
-
-    Complex operator*(const Complex &b) const {
-        return Complex(x * b.x - y * b.y, x * b.y + y * b.x);
-    }
-};
+const double PI = acos(-1.0);   // PI = arccos(-1)
 
 /**
  * FFT Recursion 实现
@@ -125,11 +103,7 @@ void solve(vector<complex<double>> &a, vector<complex<double>> &b) {
 
 void display(vector<complex<double>> num) {
     for (auto &cd : num) {
-        cout << " ";
-        cout << cd.real();
-        if (cd.imag() != 0) {
-            cout << "+" << cd.imag() << "i";
-        }
+        cout << cd;
     }
 
     cout << endl;
@@ -141,18 +115,17 @@ int main() {
     num1 = read();
     num2 = read();
 
-    cout << "num1 = ";
-    display(num1);
-    cout << "num2 = ";
-    display(num2);
-
     vector<complex<double>> tmp1, tmp2, mid, ans;
     solve(num1, num2);
+
+    cout << "Before FFT " << endl;
+    display(num1);
+    display(num2);
 
     tmp1 = FFT(num1, false);
     tmp2 = FFT(num2, false);
 
-    cout << "After FFT: " << endl;
+    cout << "After FFT " << endl;
     display(tmp1);
     display(tmp2);
 
@@ -163,7 +136,7 @@ int main() {
         mid.push_back(tmp1[i] * tmp2[i]);
     }
 
-    cout << "After times:";
+    cout << "After times:" << endl;
     display(mid);
 
     tmp1.clear();
@@ -174,7 +147,7 @@ int main() {
     int add = 0;
     string final;
 
-    cout << "Output: ";
+    cout << "Result: " << endl;
     display(ans);
     cout << endl;
 
