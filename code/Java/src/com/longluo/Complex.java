@@ -1,5 +1,3 @@
-package com.longluo;
-
 /******************************************************************************
  *  Compilation:  javac Complex.java
  *  Execution:    java Complex
@@ -29,6 +27,8 @@ package com.longluo;
  *  tan(a)       = -6.685231390246571E-6 + 1.0000103108981198i
  *
  ******************************************************************************/
+
+package com.longluo;
 
 /**
  * The {@code Complex} class represents a complex number.
