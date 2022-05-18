@@ -10,56 +10,38 @@ import java.util.Scanner;
 public class FFT_Recursion_v2 {
 
     static class Complex {
-        double x;
-        double y;
+        double re;
+        double im;
 
-        Complex(double x, double y) {
-            this.x = x;
-            this.y = y;
+        Complex(double re, double im) {
+            this.re = re;
+            this.im = im;
         }
 
         public Complex plus(Complex other) {
-            return new Complex(this.x + other.x, this.y + other.y);
+            return new Complex(this.re + other.re, this.im + other.im);
         }
 
         public Complex minus(Complex other) {
-            return new Complex(this.x - other.x, this.y - other.y);
+            return new Complex(this.re - other.re, this.im - other.im);
         }
 
         public Complex times(Complex other) {
-            double real = this.x * other.x - this.y * other.y;
-            double imag = this.x * other.y + this.y * other.x;
-            return new Complex(real, imag);
-        }
-
-        public Complex multiply(Complex other) {
-            double real = this.x * other.x - this.y * other.y;
-            double imag = this.x * other.y + this.y * other.x;
+            double real = this.re * other.re - this.im * other.im;
+            double imag = this.re * other.im + this.im * other.re;
             return new Complex(real, imag);
         }
 
         public Complex scale(double alpha) {
-            return new Complex(alpha * x, alpha * y);
+            return new Complex(alpha * re, alpha * im);
         }
 
         public Complex conjugate() {
-            return new Complex(x, -y);
+            return new Complex(re, -im);
         }
 
         public String toString() {
-            if (y == 0) {
-                return x + "";
-            }
-
-            if (x == 0) {
-                return y + "i";
-            }
-
-            if (y < 0) {
-                return x + " - " + (-y) + "i";
-            }
-
-            return x + " + " + y + "i";
+            return "(" + re + "," + im + ")";
         }
     }
 
@@ -161,26 +143,40 @@ public class FFT_Recursion_v2 {
         Arrays.setAll(B, e -> new Complex(0, 0));
 
         for (int i = len1 - 1; i >= 0; i--) {
-            A[len1 - 1 - i].x = num1.charAt(i) - '0';
+            A[len1 - 1 - i].re = num1.charAt(i) - '0';
         }
         for (int i = len2 - 1; i >= 0; i--) {
-            B[len2 - 1 - i].x = num2.charAt(i) - '0';
+            B[len2 - 1 - i].re = num2.charAt(i) - '0';
         }
+
+        System.out.println("Before FFT");
+        display(A);
+        display(B);
 
         Complex[] mid1 = FFT(A);
         Complex[] mid2 = FFT(B);
 
+        System.out.println("After FFT");
+        display(A);
+        display(B);
+
         Complex[] mid = new Complex[n];
         for (int i = 0; i < n; i++) {
-            mid[i] = mid1[i].multiply(mid2[i]);
+            mid[i] = mid1[i].times(mid2[i]);
         }
 
+        System.out.println("Times:");
+        display(mid);
+
         Complex[] res = IFFT(mid);
+
+        System.out.println("Result:");
+        display(res);
 
         int[] sum = new int[n];
         int carry = 0;
         for (int i = 0; i < n; i++) {
-            int op = (int) (Math.floor(res[i].x + 0.5)) + carry;
+            int op = (int) (Math.floor(res[i].re + 0.5)) + carry;
             carry = op / 10;
             sum[i] = op % 10;
         }
@@ -196,6 +192,14 @@ public class FFT_Recursion_v2 {
         }
 
         return ans.toString();
+    }
+
+    public static void display(Complex[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i].toString());
+        }
+
+        System.out.println();
     }
 
     public static void main(String[] args) {
