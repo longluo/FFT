@@ -23,8 +23,8 @@ struct Complex {
         return Complex(x * b.x - y * b.y, x * b.y + y * b.x);
     }
 
-    Complex scale(const double alpha) const {
-        return Complex(x * alpha, alpha * y);
+    string toString() {
+        return "(" + to_string(x) + "," + to_string(y) + "i)";
     }
 };
 
@@ -108,28 +108,37 @@ string multiply(string num1, string num2) {
     }
 
     vector<Complex> a(n);
-    vector<Complex> b(n);
 
-    for (int i = len1 - 1; i >= 0; i--) {
-        a[i].x = num1[len1 - 1 - i] - '0';
+    for (int i = 0; i < len1 && i < len2; i++) {
+        a[i] = Complex(num1[len1 - 1 - i] - '0', num2[len2 - 1 - i] - '0');
     }
 
-    for (int i = len2 - 1; i >= 0; i--) {
-        b[i].x = num2[len2 - 1 - i] - '0';
+    if (len1 >= len2) {
+        for (int i = len2; i < len1; i++) {
+            a[i] = Complex(num1[len1 - 1 - i] - '0', 0);
+        }
+    } else {
+        for (int i = len1; i < len2; i++) {
+            a[i] = Complex(0, num2[len2 - 1 - i] - '0');
+        }
     }
 
     FFT(a, false);
-    FFT(b, false);
 
     for (int i = 0; i < n; i++) {
-        a[i] = a[i] * b[i];
+        a[i] = a[i] * a[i];
     }
 
     FFT(a, true);
 
     vector<int> res(n + 1);
+
+    // FFT系数转点值乘法 转系数之后虚部除以2（乘0.5/len）即是结果
+    double iLen = 0.5 / n;
+
+    // 除len是因为IDFT的时候没有处理虚部
     for (int i = 0; i < n; i++) {
-        res[i] = int(a[i].x + 0.5);
+        res[i] = int(a[i].y * iLen + 0.5);
     }
 
     for (int i = 0; i < n; i++) {
@@ -137,7 +146,7 @@ string multiply(string num1, string num2) {
         res[i] %= 10;
     }
 
-    int idx = n - 1;
+    int idx = n;
     while (res[idx] == 0 && idx > 0) {
         idx--;
     }
