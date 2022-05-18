@@ -115,67 +115,65 @@ int main() {
     num1 = read();
     num2 = read();
 
-    vector<complex<double>> tmp1, tmp2, mid, ans;
     solve(num1, num2);
 
     cout << "Before FFT " << endl;
     display(num1);
     display(num2);
 
-    tmp1 = FFT(num1, false);
-    tmp2 = FFT(num2, false);
+    vector<complex<double>> mid1, mid2;
+
+    mid1 = FFT(num1, false);
+    mid2 = FFT(num2, false);
 
     cout << "After FFT " << endl;
-    display(tmp1);
-    display(tmp2);
+    display(mid1);
+    display(mid2);
 
     num1.clear();
     num2.clear();
 
-    for (int i = 0; i < tmp1.size(); i++) {
-        mid.push_back(tmp1[i] * tmp2[i]);
+    vector<complex<double>> mid;
+    for (int i = 0; i < mid1.size(); i++) {
+        mid.push_back(mid1[i] * mid2[i]);
     }
 
     cout << "After times:" << endl;
     display(mid);
 
-    tmp1.clear();
-    tmp2.clear();
+    mid1.clear();
+    mid2.clear();
 
-    ans = FFT(mid, true);
-    bool Ans = false;
-    int add = 0;
-    string final;
+    vector<complex<double>> res;
+    res = FFT(mid, true);
 
     cout << "Result: " << endl;
-    display(ans);
-    cout << endl;
+    display(res);
+
+    string ans;
+    int carry = 0;
 
     //进位处理
-    for (int i = 0; i < ans.size(); i++) {
-        int op = round(round(ans[i].real()) / ans.size()) + add;
-        add = 0;
-        if (op >= 10) {
-            add = op / 10;
-        }
-
-        final += op % 10 + '0';
+    for (int i = 0; i < res.size(); i++) {
+        int sum = round(round(res[i].real()) / res.size()) + carry;
+        carry = sum / 10;
+        ans += sum % 10 + '0';
     }
 
-    if (add > 0) {
-        final += add % 10 + '0';
+    if (carry > 0) {
+        ans += carry % 10 + '0';
     }
 
     cout << "Result: ";
-
-    for (int i = final.size() - 1; i >= 0; i--) {
-        if (final[i] != '0') {
-            Ans = true;
-        } else if (!Ans) {
+    bool isEnd = false;
+    for (int i = ans.size() - 1; i >= 0; i--) {
+        if (ans[i] != '0') {
+            isEnd = true;
+        } else if (!isEnd) {
             continue;
         }
 
-        cout << final[i];
+        cout << ans[i];
     }
 
     cout << '\n';
