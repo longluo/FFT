@@ -9,8 +9,9 @@
 using namespace std;
 
 class Solution {
-    static const long long G = 3;
     static const long long MOD = 998244353;
+    static const long long G = 3;
+    static const int G_INV = 332748118;
     vector<int> rev;
 
 public:
@@ -39,10 +40,7 @@ public:
         }
 
         for (int len = 2; len <= n; len <<= 1) {
-            long long wlen = quickPower(G, (MOD - 1) / len);
-            if (invert) {
-                wlen = quickPower(wlen, MOD - 2);
-            }
+            long long wlen = quickPower(invert ? G_INV : G, (MOD - 1) / len);
 
             for (int i = 0; i < n; i += len) {
                 long long w = 1;
