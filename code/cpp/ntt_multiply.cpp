@@ -9,43 +9,57 @@
 using namespace std;
 
 class Solution {
-    static const long long G = 3, Ginv = 332748118, P = 998244353;
+    static const long long G = 3;
+    static const long long MOD = 998244353;
     vector<int> rev;
 
 public:
-    long long fastpow(long long a, long long n) {
+    long long quickPower(long long a, long long b) {
         long long res = 1;
-        do {
-            if (n & 1) {
-                res = (res * a) % P;
+
+        while (b > 0) {
+            if (b & 1) {
+                res = (res * a) % MOD;
             }
 
-            a = (a * a) % P;
-        } while (n >>= 1);
+            a = (a * a) % MOD;
+            b >>= 1;
+        }
 
-        return res % P;
+        return res % MOD;
     }
 
-    void ntt(vector<long long> &a, bool inv = false) {
+    void ntt(vector<long long> &a, bool invert = false) {
         int n = a.size();
 
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             if (i < rev[i]) {
                 swap(a[i], a[rev[i]]);
             }
         }
 
-        for (int bisector = 1; bisector < n; bisector <<= 1) {
-            long long ai = fastpow(inv ? Ginv : G, (P - 1) / (bisector << 1));
+        for (int len = 2; len <= n; len <<= 1) {
+            long long wlen = quickPower(G, (MOD - 1) / len);
+            if (invert) {
+                wlen = quickPower(wlen, MOD - 2);
+            }
 
-            for (int i = 0; i < n; i += (bisector << 1)) {
-                long long multiplier = 1;
-                for (int j = 0; j < bisector; ++j) {
-                    long long a0 = a[i + j], a1 = (multiplier * a[i + j + bisector]) % P;
-                    a[i + j] = (a0 + a1) % P;
-                    a[i + j + bisector] = (P + a0 - a1) % P;
-                    multiplier = (multiplier * ai) % P;
+            for (int i = 0; i < n; i += len) {
+                long long w = 1;
+                for (int j = 0; j < len / 2; j++) {
+                    long long u = a[i + j];
+                    long long v = (w * a[i + j + len / 2]) % MOD;
+                    a[i + j] = (u + v) % MOD;
+                    a[i + j + len / 2] = (MOD + u - v) % MOD;
+                    w = (w * wlen) % MOD;
                 }
+            }
+        }
+
+        if (invert) {
+            long long inver = quickPower(n, MOD - 2);
+            for (int i = 0; i < n; i++) {
+                a[i] = (long long) a[i] * inver % MOD;
             }
         }
     }
@@ -83,25 +97,23 @@ public:
         ntt(a);
         ntt(b);
 
-        for (int i = 0; i < n; ++i) {
-            a[i] = (a[i] * b[i]) % P;
+        for (int i = 0; i < n; i++) {
+            a[i] = (a[i] * b[i]) % MOD;
         }
 
         ntt(a, true);
 
-        long long inv = fastpow(n, P - 2);
-
         string res;
-        long long prev = 0;
+        long long carry = 0;
         for (int i = 0; i < len1 + len2 - 1; ++i) {
-            long long curr = a[i] * inv % P + prev;
+            long long curr = a[i] + carry;
             res += curr % 10 + '0';
-            prev = curr / 10;
+            carry = curr / 10;
         }
 
-        while (prev) {
-            res += prev % 10 + '0';
-            prev /= 10;
+        while (carry) {
+            res += carry % 10 + '0';
+            carry /= 10;
         }
 
         reverse(res.begin(), res.end());
@@ -110,12 +122,13 @@ public:
 };
 
 int main() {
+    cout << "Please Input 2 numbers: " << endl;
+
     string num1, num2;
     cin >> num1 >> num2;
 
     Solution s;
     string result = s.multiply(num1, num2);
+
     cout << "Result:" << result << endl;
 }
-
-
