@@ -16,7 +16,6 @@ void display(vector<long long> arr) {
     cout << endl;
 }
 
-
 class Solution {
 
 public:
@@ -25,6 +24,14 @@ public:
     const long long MOD = 998244353;
 
     vector<int> rev;
+
+    void display(vector<long long> arr) {
+        for (int i = 0; i < arr.size(); i++) {
+            cout << arr[i] << " ";
+        }
+
+        cout << endl;
+    }
 
     long long quickPower(long long a, long long b) {
         long long res = 1;
@@ -94,14 +101,28 @@ public:
             b[i] = num2[len2 - 1 - i] - '0';
         }
 
+        cout << "Before FFT" << endl;
+        display(a);
+        display(b);
+
         ntt(a, false);
         ntt(b, false);
+
+        cout << "After FFT" << endl;
+        display(a);
+        display(b);
 
         for (int i = 0; i < n; i++) {
             a[i] = (a[i] * b[i]) % MOD;
         }
 
+        cout << "After Times:" << endl;
+        display(a);
+
         ntt(a, true);
+
+        cout << "After IFFT" << endl;
+        display(a);
 
         string res;
         long long carry = 0;
@@ -110,6 +131,9 @@ public:
         for (int i = 0; i < n; i++) {
             a[i] = a[i] * inver % MOD;
         }
+
+        cout << "Result:" << endl;
+        display(a);
 
         for (int i = 0; i < n; i++) {
             long long sum = a[i] + carry;
@@ -133,6 +157,22 @@ public:
     }
 };
 
+/*
+123 456
+Before FFT
+3 2 1 0 0 0 0 0
+6 5 4 0 0 0 0 0
+After FFT
+6 658473933 825076919 65787358 2 166602990 173167438 107380084
+15 518064901 565325765 793466147 5 785754073 432918592 897447962
+After Times:
+90 11925151 784316648 497879635 10 130608434 213927693 357831189
+After IFFT
+144 216 224 104 32 0 0 0
+Result:
+18 27 28 13 4 0 0 0
+Result:56088
+ */
 int main() {
     cout << "Please Input 2 numbers: " << endl;
 
