@@ -17,7 +17,7 @@ void display(vector<long long> arr) {
     cout << endl;
 }
 
-long long quickPower(long long a, long long b) {
+long long quickPower(long long a, int b) {
     long long res = 1;
 
     while (b > 0) {
