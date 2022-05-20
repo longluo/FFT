@@ -124,8 +124,6 @@ public:
         cout << "After IFFT" << endl;
         display(a);
 
-        string res;
-        long long carry = 0;
         long long inver = quickPower(n, MOD - 2);
 
         for (int i = 0; i < n; i++) {
@@ -135,8 +133,10 @@ public:
         cout << "Result:" << endl;
         display(a);
 
+        string res;
+        long long carry = 0;
         for (int i = 0; i < n; i++) {
-            long long sum = a[i] + carry;
+            long long sum = (a[i] + carry) % MOD;
             res += sum % 10 + '0';
             carry = sum / 10;
         }
