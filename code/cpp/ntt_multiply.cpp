@@ -75,7 +75,7 @@ public:
         if (invert) {
             long long inver = quickPower(n, MOD - 2);
             for (int i = 0; i < n; i++) {
-                a[i] = (long long) a[i] * inver % MOD;
+                a[i] = a[i] * inver % MOD;
             }
         }
     }
@@ -135,10 +135,10 @@ public:
 
         string res;
         long long carry = 0;
-        for (int i = 0; i < len1 + len2 - 1; ++i) {
-            long long curr = a[i] + carry;
-            res += curr % 10 + '0';
-            carry = curr / 10;
+        for (int i = 0; i < n; ++i) {
+            long long sum = (a[i] + carry) % MOD;
+            res += sum % 10 + '0';
+            carry = sum / 10;
         }
 
         while (carry) {
@@ -146,6 +146,12 @@ public:
             carry /= 10;
         }
 
+        int idx = n - 1;
+        while (idx >= 0 && res[idx] == '0') {
+            idx--;
+        }
+
+        res = res.substr(0, idx + 1);
         reverse(res.begin(), res.end());
         return res;
     }
