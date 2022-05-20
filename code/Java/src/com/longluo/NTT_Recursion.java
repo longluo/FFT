@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * NTT Iteration
+ * NTT Recursion
  */
 
 /*
@@ -18,10 +18,12 @@ After FFT
 After Times:
 90 11925151 784316648 497879635 10 130608434 213927693 357831189
 After IFFT
+144 216 224 104 32 0 0 0
+Result:
 18 27 28 13 4 0 0 0
 Result:56088
 */
-public class NTT_Iteration {
+public class NTT_Recursion {
 
     public static void display(long[] arr) {
         for (int i = 0; i < arr.length; i++) {
@@ -35,12 +37,6 @@ public class NTT_Iteration {
         public static final int G = 3;
         public static final int G_INV = 332748118;
         public static final int MOD = 998244353;
-
-        public static void swap(long[] arr, int i, int j) {
-            long temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        }
 
         public static long quickPower(long a, long b) {
             long ans = 1;
@@ -58,41 +54,30 @@ public class NTT_Iteration {
 
         public static void NTT(long arr[], boolean invert) {
             int n = arr.length;
-
-            int[] rev = new int[n];
-            for (int i = 0; i < n; i++) {
-                rev[i] = rev[i >> 1] >> 1;
-                if ((i & 1) == 1) {
-                    rev[i] |= n / 2;
-                }
+            if (n <= 1) {
+                return;
             }
 
-            for (int i = 0; i < n; i++) {
-                if (i < rev[i]) {
-                    swap(arr, i, rev[i]);
-                }
+            long[] Pe = new long[n / 2];
+            long[] Po = new long[n / 2];
+
+            for (int i = 0; i < n / 2; i++) {
+                Pe[i] = arr[2 * i];
+                Po[i] = arr[2 * i + 1];
             }
 
-            for (int len = 2; len <= n; len <<= 1) {
-                long wlen = quickPower(invert ? G_INV : G, (MOD - 1) / len);
+            NTT(Pe, invert);
+            NTT(Po, invert);
 
-                for (int i = 0; i < n; i += len) {
-                    long w = 1;
-                    for (int j = 0; j < len / 2; j++) {
-                        long u = arr[i + j];
-                        long v = w * arr[i + j + len / 2] % MOD;
-                        arr[i + j] = (u + v) % MOD;
-                        arr[i + j + len / 2] = (MOD + u - v) % MOD;
-                        w = (w * wlen) % MOD;
-                    }
-                }
-            }
+            long wn = quickPower(invert ? G_INV : G, (MOD - 1) / n);
+            long w = 1;
 
-            if (invert) {
-                long inver = quickPower(n, MOD - 2);
-                for (int i = 0; i < n; i++) {
-                    arr[i] = arr[i] * inver % MOD;
-                }
+            for (int i = 0; i < n / 2; i++) {
+                arr[i] = Pe[i] + w * Po[i] % MOD;
+                arr[i] = (arr[i] % MOD + MOD) % MOD;
+                arr[i + n / 2] = Pe[i] - w * Po[i] % MOD;
+                arr[i + n / 2] = (arr[i + n / 2] % MOD + MOD) % MOD;
+                w = (w * wn) % MOD;
             }
         }
 
@@ -139,6 +124,14 @@ public class NTT_Iteration {
 
             NTT(A, true);
 
+            System.out.println("After IFFT");
+            display(A);
+
+            long inver = quickPower(n, MOD - 2);
+            for (int i = 0; i < n; i++) {
+                A[i] = A[i] * inver % MOD;
+            }
+
             System.out.println("Result:");
             display(A);
 
@@ -156,7 +149,7 @@ public class NTT_Iteration {
             }
 
             int idx = n - 1;
-            while (ans.length() >= 0 && ans.charAt(idx) == '0') {
+            while (ans.length() > 0 && ans.charAt(idx) == '0') {
                 ans.deleteCharAt(idx);
                 idx--;
             }
@@ -166,6 +159,8 @@ public class NTT_Iteration {
     }
 
     public static void main(String[] args) {
+        System.out.println(" " + Long.MIN_VALUE + " " + Long.MAX_VALUE);
+
         Scanner sc = new Scanner(System.in);
         try {
             while (true) {
