@@ -16,20 +16,14 @@ hs_err_pid*
 
 *.iml
 
+# Out Files
 out/
 
 build/
 
+cmake-build-debug/
+
 *.o
 *.obj
-
-
-
-
-
-
-
-
-
 
 

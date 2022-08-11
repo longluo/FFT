@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.16)
+project(cpp)
+
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(fft fft.cpp)
+
+add_executable(fft_recursion fft_recursion.cpp)
+add_executable(fft_recursion_v2 fft_recursion_v2.cpp)
+
+add_executable(fft_iteration fft_iteration.cpp)
+
+add_executable(fft_multiply_2fft fft_multiply_2fft.cpp)
+add_executable(fft_multiply_3fft fft_multiply_3fft.cpp)
+
+add_executable(fft_recursion_multiply_v1 fft_recursion_multiply_v1.cpp)
+add_executable(fft_recursion_multiply_v2 fft_recursion_multiply_v2.cpp)
+add_executable(fft_recursion_multiply_v3 fft_recursion_multiply_v3.cpp)
+
+add_executable(fft_iteration_multiply_v1 fft_iteration_multiply_v1.cpp)
+add_executable(fft_iteration_multiply_v2 fft_iteration_multiply_v2.cpp)
+add_executable(fft_iteration_multiply_v3 fft_iteration_multiply_v3.cpp)
+add_executable(fft_iteration_multiply_v4 fft_iteration_multiply_v4.cpp)
+add_executable(fft_iteration_multiply_v5 fft_iteration_multiply_v5.cpp)
+
+add_executable(ntt_base ntt_base.cpp)
+
+add_executable(ntt ntt.cpp)
+
+add_executable(ntt_multiply ntt_multiply.cpp)
+add_executable(ntt_recursion_multiply ntt_recursion_multiply.cpp)
+
+add_executable(2d_fourier 2d_fourier.cpp)

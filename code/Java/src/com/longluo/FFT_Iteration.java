@@ -7,7 +7,7 @@ import java.util.Scanner;
 /**
  * FFT Iteration
  */
-public class FFT_Iteration_v1 {
+public class FFT_Iteration {
 
     static class Solution {
         static class Complex {

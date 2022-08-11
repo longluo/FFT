@@ -12,7 +12,7 @@
 hs_err_pid*
 
 # IDEA
-.idea
+.idea/
 
 *.iml
 
@@ -22,14 +22,5 @@ build/
 
 *.o
 *.obj
-
-
-
-
-
-
-
-
-
 
 
