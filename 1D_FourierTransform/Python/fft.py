@@ -103,6 +103,6 @@ sr = 2048
 tis1 = time.perf_counter()
 FFT(gen_sig(sr))
 tis2 = time.perf_counter()
-print(tis2 - tis1)
+print("time: %s seconds " % (tis2 - tis1))
 
 
