@@ -48,5 +48,36 @@ plt.ylabel('Amplitude')
 plt.show()
 
 
+X=FFT(x)
+
+# calculate the frequency
+N = len(X)
+n = np.arange(N)
+T = N/sr
+freq = n/T
+
+plt.figure(figsize = (12, 6))
+plt.subplot(121)
+plt.stem(freq, abs(X), 'b', \
+         markerfmt=" ", basefmt="-b")
+plt.xlabel('Freq (Hz)')
+plt.ylabel('FFT Amplitude |X(freq)|')
+
+# Get the one-sided specturm
+n_oneside = N//2
+# get the one side frequency
+f_oneside = freq[:n_oneside]
+
+# normalize the amplitude
+X_oneside =X[:n_oneside]/n_oneside
+
+plt.subplot(122)
+plt.stem(f_oneside, abs(X_oneside), 'b', \
+         markerfmt=" ", basefmt="-b")
+plt.xlabel('Freq (Hz)')
+plt.ylabel('Normalized FFT Amplitude |X(freq)|')
+plt.tight_layout()
+plt.show()
+
 
 
