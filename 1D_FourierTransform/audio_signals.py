@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.io.wavfile import write
+from scipy.fft import fft, fftfreq
 
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
@@ -35,3 +36,13 @@ plt.show()
 
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("mysinewave.wav", SAMPLE_RATE, normalized_tone)
+
+# FFT
+# Number of samples in normalized_tone
+N = SAMPLE_RATE * DURATION
+
+yf = fft(normalized_tone)
+xf = fftfreq(N, 1 / SAMPLE_RATE)
+
+plt.plot(xf, np.abs(yf))
+plt.show()
