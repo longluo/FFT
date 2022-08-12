@@ -37,6 +37,23 @@ plt.show()
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("440music.wav", SAMPLE_RATE, normalized_tone)
 
+# Mixed Music Signal
+_, music_tone_261 = generate_sine_wave(261, SAMPLE_RATE, DURATION)
+_, music_tone_440 = generate_sine_wave(440, SAMPLE_RATE, DURATION)
+_, music_tone_1046 = generate_sine_wave(1046, SAMPLE_RATE, DURATION)
+
+music_tone = music_tone_261 + music_tone_440 + music_tone_1046
+
+normalized_tone = np.int16((music_tone / music_tone.max()) * 32767)
+
+plt.plot(normalized_tone[:1000])
+plt.xlabel('Time (x)')
+plt.ylabel('Amplitude (y)')
+plt.title('Music (261Hz 440Hz 1046Hz')
+plt.show()
+
+# Remember SAMPLE_RATE = 44100 Hz is our playback rate
+write("mixed_music.wav", SAMPLE_RATE, normalized_tone)
 
 
 # Mixing Audio Signals
@@ -54,7 +71,7 @@ plt.ylabel('Amplitude (y)')
 plt.show()
 
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
-write("mysinewave.wav", SAMPLE_RATE, normalized_tone)
+write("musicNoise.wav", SAMPLE_RATE, normalized_tone)
 
 # FFT
 # Number of samples in normalized_tone
