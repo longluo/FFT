@@ -1,11 +1,7 @@
-import imageio
+import imageio.v2 as imageio
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.core.fromnumeric import shape
-from numpy.lib import imag, math, pad
-import time
-
-from numpy.lib.shape_base import tile
+from numpy.lib import math
 
 
 class ImageProcess:

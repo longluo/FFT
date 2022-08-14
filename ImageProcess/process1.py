@@ -1,8 +1,7 @@
-from matplotlib import image
-from matplotlib.pyplot import axis, gray
-from numpy.lib import math
-from ImageProcess import ImageProcess
 import numpy as np
+from numpy.lib import math
+
+from ImageProcess import ImageProcess
 
 
 def solution1():
