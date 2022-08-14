@@ -3,11 +3,13 @@ from matplotlib import pyplot as plt
 from scipy.io.wavfile import write
 from scipy.fft import fft, fftfreq
 from scipy.fft import rfft, rfftfreq
+from scipy.fft import irfft
 
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
 
 N = SAMPLE_RATE * DURATION
+
 
 def generate_sine_wave(freq, sample_rate, duration):
     x = np.linspace(0, duration, sample_rate * duration, endpoint=False)
@@ -54,7 +56,6 @@ plt.plot(x, y)
 plt.xlabel('Time (x)')
 plt.ylabel('Amplitude (y)')
 plt.show()
-
 
 # Pure Music Signal
 _, music_tone = generate_sine_wave(440, SAMPLE_RATE, DURATION)
@@ -110,7 +111,17 @@ points_per_freq = len(xf) / (SAMPLE_RATE / 2)
 # Our target frequency is 4000 Hz
 target_idx = int(points_per_freq * 4000)
 
-yf[target_idx - 1 : target_idx + 2] = 0
+yf[target_idx - 1: target_idx + 2] = 0
 
 plt.plot(xf, np.abs(yf))
 plt.show()
+
+new_sig = irfft(yf)
+
+plt.plot(new_sig[:1000])
+plt.show()
+
+norm_new_sig = np.int16(new_sig * (32767 / new_sig.max()))
+
+write("clean.wav", SAMPLE_RATE, norm_new_sig)
+
