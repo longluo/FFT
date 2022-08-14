@@ -7,6 +7,7 @@ from scipy.fft import rfft, rfftfreq
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
 
+N = SAMPLE_RATE * DURATION
 
 def generate_sine_wave(freq, sample_rate, duration):
     x = np.linspace(0, duration, sample_rate * duration, endpoint=False)
@@ -19,7 +20,6 @@ def generate_sine_wave(freq, sample_rate, duration):
 # Use FFT to generate the Freq domain
 # Number of samples in normalized_tone
 def generate_spectrum_fft(normalized_tone):
-    N = SAMPLE_RATE * DURATION
     yf = fft(normalized_tone)
     xf = fftfreq(N, 1 / SAMPLE_RATE)
     plt.plot(xf, np.abs(yf))
@@ -31,7 +31,6 @@ def generate_spectrum_fft(normalized_tone):
 
 # Use RFFT to generate the Freq domain
 def generate_spectrum_rfft(normalized_tone):
-    N = SAMPLE_RATE * DURATION
     yf = rfft(normalized_tone)
     xf = rfftfreq(N, 1 / SAMPLE_RATE)
     plt.plot(xf, np.abs(yf))
@@ -102,4 +101,16 @@ write("musicNoise.wav", SAMPLE_RATE, normalized_tone)
 generate_spectrum_fft(normalized_tone)
 generate_spectrum_rfft(normalized_tone)
 
+yf = rfft(normalized_tone)
+xf = rfftfreq(N, 1 / SAMPLE_RATE)
 
+# The maximum frequency is half the sample rate
+points_per_freq = len(xf) / (SAMPLE_RATE / 2)
+
+# Our target frequency is 4000 Hz
+target_idx = int(points_per_freq * 4000)
+
+yf[target_idx - 1 : target_idx + 2] = 0
+
+plt.plot(xf, np.abs(yf))
+plt.show()
