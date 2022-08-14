@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy.io.wavfile import write
 from scipy.fft import fft, fftfreq
+from scipy.fft import rfft, rfftfreq
 
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
@@ -17,10 +18,22 @@ def generate_sine_wave(freq, sample_rate, duration):
 
 # Use FFT to generate the Freq domain
 # Number of samples in normalized_tone
-def generate_spectrum(normalized_tone):
+def generate_spectrum_fft(normalized_tone):
     N = SAMPLE_RATE * DURATION
     yf = fft(normalized_tone)
     xf = fftfreq(N, 1 / SAMPLE_RATE)
+    plt.plot(xf, np.abs(yf))
+    plt.xlabel('freq (w)')
+    plt.ylabel('Amplitude (y)')
+    plt.title('Spectrum')
+    plt.show()
+
+
+# Use RFFT to generate the Freq domain
+def generate_spectrum_rfft(normalized_tone):
+    N = SAMPLE_RATE * DURATION
+    yf = rfft(normalized_tone)
+    xf = rfftfreq(N, 1 / SAMPLE_RATE)
     plt.plot(xf, np.abs(yf))
     plt.xlabel('freq (w)')
     plt.ylabel('Amplitude (y)')
@@ -54,7 +67,7 @@ plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Music 440Hz')
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("440music.wav", SAMPLE_RATE, normalized_tone)
 
-generate_spectrum(normalized_tone)
+generate_spectrum_fft(normalized_tone)
 
 # Mixed Music Signal
 _, music_tone_261 = generate_sine_wave(261, SAMPLE_RATE, DURATION)
@@ -70,7 +83,7 @@ plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Music (261Hz 440Hz 10
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("mixed_music.wav", SAMPLE_RATE, normalized_tone)
 
-generate_spectrum(normalized_tone)
+generate_spectrum_fft(normalized_tone)
 
 # Mixing Audio Signals
 _, nice_tone = generate_sine_wave(440, SAMPLE_RATE, DURATION)
@@ -86,7 +99,7 @@ plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Mixed Music')
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("musicNoise.wav", SAMPLE_RATE, normalized_tone)
 
-generate_spectrum(normalized_tone)
-
+generate_spectrum_fft(normalized_tone)
+generate_spectrum_rfft(normalized_tone)
 
 
