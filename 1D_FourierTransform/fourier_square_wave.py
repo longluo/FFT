@@ -5,16 +5,22 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.signal import square
 
-x = np.arange(-2 * np.pi, 2 * np.pi, 0.001)  # x axis has been chosen from –π to + π,
+x = np.arange(-2 * np.pi, 2 * np.pi, 0.001)
+# x axis has been chosen from –2π to +2π,
 # value of 1 smallest square along x axis is 0.001
 
-y = square(x)  # defining square wave function 𝑦 =−1, 𝑓𝑜𝑟 − 𝜋 ≤ 𝑥 ≤ 0
-# y = +1, 𝑓𝑜𝑟 0 ≤ 𝑥 ≤ 𝜋
+y = square(x)
+# defining square wave function
+# 𝑦 =−1, 𝑓𝑜𝑟 −𝜋 ≤ 𝑥 ≤ 0
+# y =+1, 𝑓𝑜𝑟 0 ≤ 𝑥 ≤ 𝜋
+
+plt.subplot(221)
+plt.plot(x, y)
+plt.title("Square Wave")
 
 # define fuction
 
 fc = lambda x: square(x) * cos(i * x)  # i: dummy index
-
 fs = lambda x: square(x) * sin(i * x)
 
 n = 50  # max value of I, not taken infinity, better result with high value
@@ -38,6 +44,7 @@ for i in range(n):
     else:
         sum = sum + (An[i] * np.cos(i * x) + Bn[i] * np.sin(i * x))
 
+plt.subplot(222)
 plt.plot(x, sum, 'g')
 plt.plot(x, y, 'r--')
 plt.title("Fourier Series for Square Wave")
