@@ -1,9 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from scipy.io.wavfile import write
 from scipy.fft import fft, fftfreq
-from scipy.fft import rfft, rfftfreq
 from scipy.fft import irfft
+from scipy.fft import rfft, rfftfreq
+from scipy.io.wavfile import write
 
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
@@ -25,10 +25,9 @@ def generate_spectrum_fft(normalized_tone):
     yf = fft(normalized_tone)
     xf = fftfreq(N, 1 / SAMPLE_RATE)
     plt.plot(xf, np.abs(yf))
-    plt.xlabel('freq (w)')
+    plt.xlabel('Frequency (Hz)')
     plt.ylabel('Amplitude (y)')
     plt.title('Spectrum')
-    plt.show()
 
 
 # Use RFFT to generate the Freq domain
@@ -36,10 +35,9 @@ def generate_spectrum_rfft(normalized_tone):
     yf = rfft(normalized_tone)
     xf = rfftfreq(N, 1 / SAMPLE_RATE)
     plt.plot(xf, np.abs(yf))
-    plt.xlabel('freq (w)')
+    plt.xlabel('Freq (w)')
     plt.ylabel('Amplitude (y)')
     plt.title('Spectrum')
-    plt.show()
 
 
 def plot_picure(input, xlabel, ylabel, title):
@@ -47,29 +45,31 @@ def plot_picure(input, xlabel, ylabel, title):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
-    plt.show()
 
 
-# Generate a 2 hertz sine wave that lasts for 5 seconds
-x, y = generate_sine_wave(2, SAMPLE_RATE, DURATION)
-plt.plot(x, y)
-plt.xlabel('Time (x)')
-plt.ylabel('Amplitude (y)')
-plt.show()
+def save_audio(name, normalized_tone):
+    write(name, SAMPLE_RATE, normalized_tone)
 
-# Pure Music Signal
+
+plt.figure(figsize=(16, 12))
+
+# Pure 440Hz Signal
 _, music_tone = generate_sine_wave(440, SAMPLE_RATE, DURATION)
 
 normalized_tone = np.int16((music_tone / music_tone.max()) * 32767)
 
-plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Music 440Hz')
+plt.subplot(121)
+plot_picure(normalized_tone, 'Time (s)', 'Amplitude (y)', 'Audio 440Hz')
 
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
-write("440music.wav", SAMPLE_RATE, normalized_tone)
+save_audio("audio440.wav", normalized_tone)
 
+plt.subplot(122)
 generate_spectrum_fft(normalized_tone)
 
-# Mixed Music Signal
+plt.show()
+
+# Mixed Audio Signal
 _, music_tone_261 = generate_sine_wave(261, SAMPLE_RATE, DURATION)
 _, music_tone_440 = generate_sine_wave(440, SAMPLE_RATE, DURATION)
 _, music_tone_1046 = generate_sine_wave(1046, SAMPLE_RATE, DURATION)
@@ -78,11 +78,13 @@ music_tone = music_tone_261 + music_tone_440 + music_tone_1046
 
 normalized_tone = np.int16((music_tone / music_tone.max()) * 32767)
 
+plt.subplot(121)
 plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Music (261Hz 440Hz 1046Hz)')
 
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("mixed_music.wav", SAMPLE_RATE, normalized_tone)
 
+plt.subplot(122)
 generate_spectrum_fft(normalized_tone)
 
 # Mixing Audio Signals
@@ -94,12 +96,16 @@ mixed_tone = nice_tone + noise_tone
 
 normalized_tone = np.int16((mixed_tone / mixed_tone.max()) * 32767)
 
+plt.subplot(131)
 plot_picure(normalized_tone, 'Time (x)', 'Amplitude (y)', 'Mixed Music')
 
 # Remember SAMPLE_RATE = 44100 Hz is our playback rate
 write("musicNoise.wav", SAMPLE_RATE, normalized_tone)
 
+plt.subplot(132)
 generate_spectrum_fft(normalized_tone)
+
+plt.subplot(133)
 generate_spectrum_rfft(normalized_tone)
 
 yf = rfft(normalized_tone)
@@ -124,4 +130,3 @@ plt.show()
 norm_new_sig = np.int16(new_sig * (32767 / new_sig.max()))
 
 write("clean.wav", SAMPLE_RATE, norm_new_sig)
-
