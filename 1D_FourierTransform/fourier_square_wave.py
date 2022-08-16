@@ -14,7 +14,9 @@ y = square(x)
 # 𝑦 =−1, 𝑓𝑜𝑟 −𝜋 ≤ 𝑥 ≤ 0
 # y =+1, 𝑓𝑜𝑟 0 ≤ 𝑥 ≤ 𝜋
 
-plt.subplot(221)
+plt.figure(figsize = (12, 6))
+
+plt.subplot(211)
 plt.plot(x, y)
 plt.title("Square Wave")
 
@@ -44,9 +46,10 @@ for i in range(n):
     else:
         sum = sum + (An[i] * np.cos(i * x) + Bn[i] * np.sin(i * x))
 
-plt.subplot(222)
+plt.subplot(212)
 plt.plot(x, sum, 'g')
 plt.plot(x, y, 'r--')
 plt.title("Fourier Series for Square Wave")
 
 plt.show()
+
